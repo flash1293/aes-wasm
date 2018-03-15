@@ -17,7 +17,7 @@ module.exports = {
       '@neutrinojs/jest',
       {
         transform: {
-          "wasm":
+          "wasm$":
             "<rootDir>/test/binaryLoader.js"
         }
       }
