@@ -1,0 +1,17 @@
+{
+  "name": "tiny-aes-wasm",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "emscripten": "sh emscripten.sh",
+    "build": "neutrino build",
+    "test": "neutrino test"
+  },
+  "devDependencies": {
+    "@neutrinojs/jest": "^8.1.2",
+    "@neutrinojs/library": "^8.1.2",
+    "binary-loader": "^0.0.1",
+    "neutrino": "^8.1.2"
+  }
+}
