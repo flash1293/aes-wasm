@@ -1,3 +1,5 @@
+// https://github.com/ricmoo/aes-js
+
 function checkInt(value) {
   return parseInt(value) === value;
 }
