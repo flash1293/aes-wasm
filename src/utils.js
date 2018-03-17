@@ -1,14 +1,48 @@
-// https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
-
-export function ab2str(buf) {
-  return String.fromCharCode.apply(null, new Uint16Array(buf));
+function checkInt(value) {
+  return parseInt(value) === value;
 }
 
-export function str2ab(str) {
-  var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-  var bufView = new Uint16Array(buf);
-  for (var i=0, strLen=str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
+function checkInts(arrayish) {
+  if (!checkInt(arrayish.length)) {
+    return false;
   }
-  return buf;
+
+  for (var i = 0; i < arrayish.length; i++) {
+    if (!checkInt(arrayish[i]) || arrayish[i] < 0 || arrayish[i] > 255) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export function coerceArray(arg, copy) {
+  // ArrayBuffer view
+  if (arg.buffer && ArrayBuffer.isView(arg) && arg.name === "Uint8Array") {
+    if (copy) {
+      if (arg.slice) {
+        arg = arg.slice();
+      } else {
+        arg = Array.prototype.slice.call(arg);
+      }
+    }
+
+    return arg;
+  }
+
+  // It's an array; check it is a valid representation of a byte
+  if (Array.isArray(arg)) {
+    if (!checkInts(arg)) {
+      throw new Error("Array contains invalid value: " + arg);
+    }
+
+    return new Uint8Array(arg);
+  }
+
+  // Something else, but behaves like an array (maybe a Buffer? Arguments?)
+  if (checkInt(arg.length) && checkInts(arg)) {
+    return new Uint8Array(arg);
+  }
+
+  throw new Error("unsupported array-like object");
 }

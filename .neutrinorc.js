@@ -10,15 +10,15 @@ module.exports = {
       neutrino.config.module
         .rule('compile')
         .test(/\.wasm$/)
-        .use('binary-loader')
-        .loader('binary-loader');
+        .use('wasm-loader')
+        .loader('wasm-loader');
     },
     [
       '@neutrinojs/jest',
       {
         transform: {
           "wasm$":
-            "<rootDir>/test/binaryLoader.js"
+            "<rootDir>/test/wasmLoader.js"
         }
       }
     ]

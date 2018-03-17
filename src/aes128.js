@@ -1,6 +1,4 @@
 import glue from './glue';
+import wasmModule from './wasm/aes128.wasm';
 
-const wasmModule = require('./wasm/aes128.wasm');
-throw new Error(wasmModule.length);
-
-export default glue(128)(wasmModule);
+export default glue(wasmModule, 128);
