@@ -39,7 +39,7 @@ export default (wasmModule, keySize) => async () => {
   const keyPointer = instance.exports._malloc(keySize);
   const ivPointer = instance.exports._malloc(16);
 
-  let reservedSize = 2 ^ 12;
+  let reservedSize = 2**12;
   let blockPointer = instance.exports._malloc(reservedSize);
   let currentMode = 'CBC';
 
@@ -47,7 +47,7 @@ export default (wasmModule, keySize) => async () => {
     const byteData = coerceArray(data);
     if (byteData.length > reservedSize) {
       instance.exports._free(blockPointer);
-      reservedSize = 2 ^ Math.ceil(Math.log2(byteData.length));
+      reservedSize = 2**Math.ceil(Math.log2(byteData.length));
       blockPointer = instance.exports._malloc(reservedSize);
     }
     byteView.set(byteData, blockPointer);
