@@ -23,7 +23,7 @@ WebAssembly.
 
 ## Usage
 
-This library has three entry points - `tiny-aes-wasm/aes128`, `tiny-aes-wasm/aes192` and `tiny-aes-wasm/aes256`.
+This library has three entry points - `tiny-aes-wasm/128`, `tiny-aes-wasm/192` and `tiny-aes-wasm/256`.
 All function exactly the same but use the three variants of AES with different key sizes under the hood which means
 they have to be initialized with appropriate keys.
 
@@ -31,7 +31,7 @@ The default export of the entry points is a nullary function which returns a pro
 Calling this function initializes a new WebAssembly context.
 
 ```js
-import aes256 from 'tiny-aes-wasm/aes256';
+import aes256 from 'tiny-aes-wasm/256';
 
 aes256().then(aesApi => {
     // encrypt and decrypt here

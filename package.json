@@ -6,6 +6,7 @@
   "scripts": {
     "emscripten": "sh emscripten.sh",
     "build": "neutrino build",
+    "postbuild": "cp package.json build/",
     "test": "neutrino test"
   },
   "devDependencies": {
