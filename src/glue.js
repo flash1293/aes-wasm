@@ -65,14 +65,14 @@ export default (wasmModule, keySize) => async () => {
       instance.exports[
         currentMode === 'CBC' ? '_AES_CBC_encrypt_buffer' : '_AES_CTR_xcrypt_buffer'
       ](contextPointer, blockPointer, data.length);
-      return byteView.subarray(blockPointer, blockPointer + data.length);
+      return byteView.subarray(blockPointer, blockPointer + data.length).slice();
     },
     decrypt: data => {
       loadData(data);
       instance.exports[
         currentMode === 'CBC' ? '_AES_CBC_decrypt_buffer' : '_AES_CTR_xcrypt_buffer'
       ](contextPointer, blockPointer, data.length);
-      return byteView.subarray(blockPointer, blockPointer + data.length);
+      return byteView.subarray(blockPointer, blockPointer + data.length).slice();
     }
   };
 };
