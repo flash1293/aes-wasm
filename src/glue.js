@@ -2,16 +2,23 @@ import { coerceArray } from "./utils";
 
 function createEnv() {
   const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+  const STACKTOP = 11312;
+  const DYNAMICTOP_PTR = 11296;
+  // set starting point for dynamic memory allocations
+  (new Uint32Array(memory.buffer))[DYNAMICTOP_PTR >> 2] = 5254208;
   return {
     env: {
       memory: memory,
-      DYNAMICTOP_PTR: 2576,
-      STACKTOP: 2592,
+      DYNAMICTOP_PTR,
+      STACKTOP,
       enlargeMemory: () => {
         throw new Error("growing the memory is not supported");
       },
       getTotalMemory: () => {
         return memory.buffer.byteLength;
+      },
+      _emscripten_memcpy_big: () => {
+        throw new Error("growing the memory is not supported");
       },
       abortOnCannotGrowMemory: () => {
         /* intentionally empty */
@@ -35,7 +42,8 @@ export default (wasmModule, keySize) => async () => {
 
   const byteView = new Uint8Array(imports.env.memory.buffer);
 
-  const contextPointer = instance.exports._malloc(16 + keyExpSizes[keySize]);
+  const encryptionContextPointer = instance.exports._malloc(278);
+  const decryptionContextPointer = instance.exports._malloc(278);
   const keyPointer = instance.exports._malloc(keySize);
   const ivPointer = instance.exports._malloc(16);
 
@@ -58,20 +66,17 @@ export default (wasmModule, keySize) => async () => {
       currentMode = mode;
       byteView.set(iv, ivPointer);
       byteView.set(key, keyPointer);
-      instance.exports._AES_init_ctx_iv(contextPointer, keyPointer, ivPointer);
+      instance.exports._aes_setkey_enc(encryptionContextPointer, keyPointer, keySize);
+      instance.exports._aes_setkey_dec(decryptionContextPointer, keyPointer, keySize);
     },
     encrypt: data => {
       loadData(data);
-      instance.exports[
-        currentMode === 'CBC' ? '_AES_CBC_encrypt_buffer' : '_AES_CTR_xcrypt_buffer'
-      ](contextPointer, blockPointer, data.length);
+      instance.exports._aes_crypt_cbc(encryptionContextPointer, 1, data.length, ivPointer, blockPointer, blockPointer);
       return byteView.subarray(blockPointer, blockPointer + data.length).slice();
     },
     decrypt: data => {
       loadData(data);
-      instance.exports[
-        currentMode === 'CBC' ? '_AES_CBC_decrypt_buffer' : '_AES_CTR_xcrypt_buffer'
-      ](contextPointer, blockPointer, data.length);
+      instance.exports._aes_crypt_cbc(decryptionContextPointer, 0, data.length, ivPointer, blockPointer, blockPointer);
       return byteView.subarray(blockPointer, blockPointer + data.length).slice();
     }
   };
