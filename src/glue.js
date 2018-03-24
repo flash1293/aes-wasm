@@ -17,9 +17,6 @@ function createEnv() {
       getTotalMemory: () => {
         return memory.buffer.byteLength;
       },
-      _emscripten_memcpy_big: () => {
-        throw new Error("growing the memory is not supported");
-      },
       abortOnCannotGrowMemory: () => {
         /* intentionally empty */
       },
@@ -49,7 +46,6 @@ export default (wasmModule, keySize) => async () => {
 
   let reservedSize = 2**12;
   let blockPointer = instance.exports._malloc(reservedSize);
-  let currentMode = 'CBC';
 
   function loadData(data) {
     const byteData = coerceArray(data);
@@ -62,8 +58,7 @@ export default (wasmModule, keySize) => async () => {
   }
 
   return {
-    init: (key, iv, mode = 'CBC') => {
-      currentMode = mode;
+    init: (key, iv) => {
       byteView.set(iv, ivPointer);
       byteView.set(key, keyPointer);
       instance.exports._aes_setkey_enc(encryptionContextPointer, keyPointer, keySize);

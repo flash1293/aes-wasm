@@ -22,13 +22,5 @@ module.exports = {
         }
       }
     ]
-  ],
-  options: {
-    mains: {
-      index: 'index',
-      128: 'aes128',
-      192: 'aes192',
-      256: 'aes256'
-    }
-  }
+  ]
 };
