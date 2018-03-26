@@ -6,5 +6,5 @@ mkdir src/wasm
 emcc ./c/aes.c \
     -s WASM=1 \
     -O3 \
-    -s "EXPORTED_FUNCTIONS=['_aes_setkey_dec', '_aes_setkey_enc', '_aes_crypt_cbc', '_malloc', '_free']" \
+    -s "EXPORTED_FUNCTIONS=['_aes_setkey_dec', '_aes_setkey_enc', '_aes_crypt_cbc']" \
     -o src/wasm/aes.js

@@ -2,58 +2,40 @@ import { coerceArray } from "./utils";
 
 function createEnv() {
   const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
-  const STACKTOP = 11312;
-  const DYNAMICTOP_PTR = 11296;
-  // set starting point for dynamic memory allocations
-  (new Uint32Array(memory.buffer))[DYNAMICTOP_PTR >> 2] = 5254208;
+  const STACKTOP = 0;
   return {
     env: {
       memory: memory,
-      DYNAMICTOP_PTR,
-      STACKTOP,
-      enlargeMemory: () => {
-        throw new Error("growing the memory is not supported");
-      },
-      getTotalMemory: () => {
-        return memory.buffer.byteLength;
-      },
-      abortOnCannotGrowMemory: () => {
-        /* intentionally empty */
-      },
-      ___setErrNo: e => {
-        throw new Error(`wasm error: ${e}`);
-      }
+      STACKTOP
     }
   };
 }
 
-const keyExpSizes = {
-  128: 176,
-  192: 208,
-  256: 240
-};
+function staticMalloc() {
+  let pointer = 2**14;
+  return (size) => {
+    pointer += size;
+    return pointer - size;
+  }
+}
 
 export default (wasmModule, keySize) => async () => {
+  const malloc = staticMalloc();
+
   const imports = createEnv();
   const { instance } = await wasmModule(imports);
 
   const byteView = new Uint8Array(imports.env.memory.buffer);
 
-  const encryptionContextPointer = instance.exports._malloc(278);
-  const decryptionContextPointer = instance.exports._malloc(278);
-  const keyPointer = instance.exports._malloc(keySize);
-  const ivPointer = instance.exports._malloc(16);
-
-  let reservedSize = 2**12;
-  let blockPointer = instance.exports._malloc(reservedSize);
+  const encryptionContextPointer = malloc(272);
+  const decryptionContextPointer = malloc(272);
+  const keyPointer = malloc(keySize);
+  const ivPointer = malloc(16);
+  // rest of the memory
+  const blockPointer = malloc(0);
 
   function loadData(data) {
     const byteData = coerceArray(data);
-    if (byteData.length > reservedSize) {
-      instance.exports._free(blockPointer);
-      reservedSize = 2**Math.ceil(Math.log2(byteData.length));
-      blockPointer = instance.exports._malloc(reservedSize);
-    }
     byteView.set(byteData, blockPointer);
   }
 
@@ -76,3 +58,4 @@ export default (wasmModule, keySize) => async () => {
     }
   };
 };
+

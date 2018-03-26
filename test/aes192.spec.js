@@ -42,5 +42,19 @@ describe('aes192', () => {
       const result = crypt.decrypt(encryptedBuffer);
       expect(result).toEqual(plainBuffer);
     });
+
+    it('should handle large arrays correctly', async () => {
+      let crypt = await aes192();
+      crypt.init(keyBuffer, ivBuffer);
+      const size = 2**20;
+      const largePlainBuffer = new Uint8Array(size);
+      for(let i = 0; i < size; i++) {
+        largePlainBuffer[i] = i % 256;
+      }
+      const largeEncryptedBuffer = crypt.encrypt(largePlainBuffer);
+      crypt.init(keyBuffer, ivBuffer);
+      const largeDecryptedBuffer = crypt.decrypt(largeEncryptedBuffer);
+      expect(largeDecryptedBuffer).toEqual(largePlainBuffer);
+    });
   });
 });
