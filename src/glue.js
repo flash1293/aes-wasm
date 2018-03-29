@@ -27,9 +27,9 @@ export default (wasmModule, keySize) => async () => {
 
   const byteView = new Uint8Array(imports.env.memory.buffer);
 
-  const encryptionContextPointer = malloc(272);
-  const decryptionContextPointer = malloc(272);
-  const keyPointer = malloc(keySize);
+  const encryptionContextPointer = malloc(276);
+  const decryptionContextPointer = malloc(276);
+  const keyPointer = malloc(keySize / 8);
   const ivPointer = malloc(16);
   // rest of the memory
   const blockPointer = malloc(0);
