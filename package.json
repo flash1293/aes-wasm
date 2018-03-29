@@ -1,8 +1,22 @@
 {
   "name": "aes-wasm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flash1293/aes-wasm.git"
+  },
+  "keywords": [
+    "wasm",
+    "webassembly",
+    "aes"
+  ],
+  "author": "Johannes Reuter",
+  "bugs": {
+    "url": "https://github.com/flash1293/aes-wasm/issues"
+  },
+  "homepage": "https://github.com/flash1293/aes-wasm#readme",
   "scripts": {
     "emscripten": "sh emscripten.sh",
     "build": "neutrino build",
