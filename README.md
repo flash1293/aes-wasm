@@ -52,9 +52,11 @@ The `iv` has to be a `TypedArray`, an `Array` or an array-like object containing
 Encrypts a given set of data which has to be a `TypedArray`, an `Array` or an array-like object containing the byte values
 of the data block. The size of the data block has to be divisble by 16 (padding is not included yet).
 A `TypedArray` will yield the best performance as it doesn't have to be converted prior to use.
+Returns a `TypedArray` containing the encrypted data.
 
 ### decrypt(plainData): plainData
 
 Decrypts a given set of encrypted data which has to be a `TypedArray`, an `Array` or an array-like object containing the byte values
 of the data block. The size of the data block has to be divisble by 16 (padding is not included yet).
 A `TypedArray` will yield the best performance as it doesn't have to be converted prior to use.
+Returns a `TypedArray` containing the decrypted data.
