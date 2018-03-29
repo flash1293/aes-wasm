@@ -1,20 +1,20 @@
-# tiny-aes-wasm
+# aes-wasm
 
-This library is a WASM port of the [tiny-AES-c](https://github.com/kokke/tiny-AES-c) C library
-for the AES encryption algorithm. It suports the CBC und CTR modes.
+This library is a WASM port of the [ghostscript AES implementation](https://www.ghostscript.com/doc/base/aes.c).
+Currently only the CBC mode is supported.
 
 You can use this library like any other JS dependency in your project by running
 ```sh
-npm i tiny-aes-wasm
+npm i aes-wasm
 ```
 or
 ```sh
-yarn add tiny-aes-wasm
+yarn add aes-wasm
 ```
 
 and importing it in the appropriate place in your project:
 ```
-import aes256 from 'tiny-aes-wasm/aes256';
+import aes256 from 'aes-wasm/aes256';
 ```
 
 The WebAssembly code is inlined into a common JS bundle and compiled and executed on the fly.
@@ -31,7 +31,7 @@ Each export of the module is a nullary function which returns a promise that res
 Calling this function initializes a new WebAssembly context.
 
 ```js
-import aes256 from 'tiny-aes-wasm';
+import aes256 from 'aes-wasm';
 
 aes256().then(aesApi => {
     // encrypt and decrypt here
