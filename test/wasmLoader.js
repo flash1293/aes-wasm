@@ -1,5 +1,5 @@
 const fs = require('fs');
-const wasmLoader = require('wasm-loader');
+const wasmLoader = require('@flash1293/wasm-loader');
 
 module.exports = {
   process(src, filename, config, options) {

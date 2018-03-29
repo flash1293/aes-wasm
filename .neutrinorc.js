@@ -11,7 +11,7 @@ module.exports = {
         .rule('compile')
         .test(/\.wasm$/)
         .use('wasm-loader')
-        .loader('wasm-loader');
+        .loader('@flash1293/wasm-loader');
     },
     [
       '@neutrinojs/jest',
