@@ -14,7 +14,7 @@ yarn add aes-wasm
 
 and importing it in the appropriate place in your project:
 ```
-import aes256 from 'aes-wasm/aes256';
+import { aes256 } from 'aes-wasm';
 ```
 
 The WebAssembly code is inlined into a common JS bundle and compiled and executed on the fly.
