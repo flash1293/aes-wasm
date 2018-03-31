@@ -31,7 +31,7 @@ Each export of the module is a nullary function which returns a promise that res
 Calling this function initializes a new WebAssembly context.
 
 ```js
-import aes256 from 'aes-wasm';
+import { aes256 } from 'aes-wasm';
 
 aes256().then(aesApi => {
     // encrypt and decrypt here
