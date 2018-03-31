@@ -833,3 +833,39 @@ void aes_crypt_cfb( aes_context *ctx,
 
     *iv_off = n;
 }
+
+void aes_crypt_ctr(aes_context *ctx,
+                    int length,
+                    unsigned char iv[16],
+                    const unsigned char *input,
+                    unsigned char *output)
+{
+    unsigned char temp[16];
+    int bi;
+    int i;
+
+        while( length > 0 )
+        {
+            aes_crypt_ecb( ctx, AES_ENCRYPT, iv, temp);
+
+            for( i = 0; i < 16; i++ )
+                output[i] = (unsigned char)( input[i] ^ temp[i] );
+
+            input  += 16;
+            output += 16;
+            length -= 16;
+
+            for (bi = 15; bi >= 0; --bi)
+            {
+                /* inc will owerflow */
+                if (iv[bi] == 255)
+                {
+                    iv[bi] = 0;
+                    continue;
+                } 
+                iv[bi] += 1;
+                break;   
+            }
+            bi = 0;
+        }
+}

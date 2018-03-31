@@ -122,6 +122,12 @@ void aes_crypt_cfb( aes_context *ctx,
                     const unsigned char *input,
                     unsigned char *output );
 
+void aes_crypt_ctr( aes_context *ctx,
+                    int length,
+                    unsigned char iv[16],
+                    const unsigned char *input,
+                    unsigned char *output );
+
 #ifdef __cplusplus
 }
 #endif

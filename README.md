@@ -1,7 +1,7 @@
 # aes-wasm
 
 This library is a WASM port of the [ghostscript AES implementation](https://www.ghostscript.com/doc/base/aes.c).
-Currently only the CBC mode is supported.
+Currently CBC and CTR mode are supported.
 
 You can use this library like any other JS dependency in your project by running
 ```sh
@@ -40,23 +40,25 @@ aes256().then(aesApi => {
 
 The API object has three functions for initialization, encryption and decryption:
 
-### init(key, iv)
+### init(key, iv, mode = 'CBC')
 
 Initializes the instance with a key and an IV. The `key` has to be a `TypedArray`, an `Array` or an array-like object
 containing the byte values of the AES key (16 items for aes128, 24 items for aes192 and 32 items for aes256).
 
 The `iv` has to be a `TypedArray`, an `Array` or an array-like object containing the byte values of the AES IV (16 items).
 
+`mode` defines the encryption/decryption mode as `string` - supported values are `CBC` and `CTR`.
+
 ### encrypt(plainData): encryptedData
 
 Encrypts a given set of data which has to be a `TypedArray`, an `Array` or an array-like object containing the byte values
-of the data block. The size of the data block has to be divisble by 16 (padding is not included yet).
+of the data block. The size of the data block has to be divisble by 16 if the `CBC` mode is used (padding is not included yet).
 A `TypedArray` will yield the best performance as it doesn't have to be converted prior to use.
 Returns a `TypedArray` containing the encrypted data.
 
 ### decrypt(plainData): plainData
 
 Decrypts a given set of encrypted data which has to be a `TypedArray`, an `Array` or an array-like object containing the byte values
-of the data block. The size of the data block has to be divisble by 16 (padding is not included yet).
+of the data block. The size of the data block has to be divisble by 16 if the `CBC` mode is used (padding is not included yet).
 A `TypedArray` will yield the best performance as it doesn't have to be converted prior to use.
 Returns a `TypedArray` containing the decrypted data.

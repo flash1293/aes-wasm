@@ -34,26 +34,38 @@ export default (wasmModule, keySize) => async () => {
   // rest of the memory
   const blockPointer = malloc(0);
 
+  let currentMode;
+
   function loadData(data) {
     const byteData = coerceArray(data);
     byteView.set(byteData, blockPointer);
   }
 
   return {
-    init: (key, iv) => {
+    init: (key, iv, mode = 'CBC') => {
       byteView.set(iv, ivPointer);
       byteView.set(key, keyPointer);
       instance.exports._aes_setkey_enc(encryptionContextPointer, keyPointer, keySize);
       instance.exports._aes_setkey_dec(decryptionContextPointer, keyPointer, keySize);
+      currentMode = mode;
     },
     encrypt: data => {
       loadData(data);
-      instance.exports._aes_crypt_cbc(encryptionContextPointer, 1, data.length, ivPointer, blockPointer, blockPointer);
+      if(currentMode === 'CBC') {
+        instance.exports._aes_crypt_cbc(encryptionContextPointer, 1, data.length, ivPointer, blockPointer, blockPointer);
+      } else {
+        instance.exports._aes_crypt_ctr(encryptionContextPointer, data.length, ivPointer, blockPointer, blockPointer);
+      }
+
       return byteView.subarray(blockPointer, blockPointer + data.length).slice();
     },
     decrypt: data => {
       loadData(data);
-      instance.exports._aes_crypt_cbc(decryptionContextPointer, 0, data.length, ivPointer, blockPointer, blockPointer);
+      if(currentMode === 'CBC') {
+        instance.exports._aes_crypt_cbc(decryptionContextPointer, 0, data.length, ivPointer, blockPointer, blockPointer);
+      } else {
+        instance.exports._aes_crypt_ctr(encryptionContextPointer, data.length, ivPointer, blockPointer, blockPointer);
+      }
       return byteView.subarray(blockPointer, blockPointer + data.length).slice();
     }
   };
