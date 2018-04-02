@@ -3,7 +3,14 @@ module.exports = {
     [
       '@neutrinojs/library',
       {
-        name: 'tiny-aes-wasm',
+        name: 'aes-wasm',
+        babel: {
+          // Override options for babel-preset-env
+          presets: [
+            ['env', {
+            }]
+          ]
+        }
       }
     ],
     (neutrino) => {
