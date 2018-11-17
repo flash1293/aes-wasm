@@ -3,6 +3,8 @@
 This library is a WASM port of the [ghostscript AES implementation](https://www.ghostscript.com/doc/base/aes.c).
 Currently CBC and CTR mode are supported.
 
+An [explanatory blog article](https://www.inovex.de/blog/webassembly-production/) is published on the inovex blog.
+
 You can use this library like any other JS dependency in your project by running
 ```sh
 npm i aes-wasm
