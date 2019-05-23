@@ -1,4 +1,4 @@
-import { coerceArray } from "./utils";
+import { coerceArray } from "./utils.js";
 
 function createEnv() {
   const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
